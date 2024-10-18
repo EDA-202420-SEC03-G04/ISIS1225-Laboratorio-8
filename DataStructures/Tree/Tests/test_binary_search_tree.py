@@ -81,7 +81,7 @@ def test_new_binary_search_tree():
     assert empty_bst["type"] == "BST"
 
 
-@handle_not_implemented
+
 def test_put():
     empty_bst = setup_tests()
     three_bst = setup_three_nodes()
@@ -585,3 +585,5 @@ def test_values():
     assert values["elements"][4] == 500
     assert values["elements"][5] == 600
     assert values["elements"][6] == 700
+    
+
