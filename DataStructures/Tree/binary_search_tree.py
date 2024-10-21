@@ -11,6 +11,7 @@ def new_map():
 
 
 
+
 def insert (root, key, value):
     nodo = nd.new_node(key, value)
     if root["key"] >= nodo["key"]:
@@ -31,3 +32,6 @@ def put (my_bst, key, value):
         
 
         pass
+
+def remove():
+    pass
