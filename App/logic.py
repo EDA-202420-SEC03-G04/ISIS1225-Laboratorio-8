@@ -28,9 +28,9 @@ import os
 import csv
 import datetime
 
-# TODO Realice la importación del Árbol Binario Ordenado
-# TODO Realice la importación de ArrayList (al) como estructura de datos auxiliar para sus requerimientos
-# TODO Realice la importación de LinearProbing (lp) como estructura de datos auxiliar para sus requerimientos
+from DataStructures.Tree import binary_search_tree as bst
+from DataStructures.List import array_list as al
+from DataStructures.Map import map_linear_probing as lp
 
 
 data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data/'
@@ -51,8 +51,7 @@ def new_logic():
                 }
 
     analyzer['crimes'] = al.new_list()
-    # TODO completar la creación del mapa ordenado
-    analyzer['dateIndex'] = None
+    analyzer['dateIndex'] = al.new_list
     
     return analyzer
 
@@ -95,33 +94,43 @@ def update_date_index(map, crime):
     occurreddate = crime['OCCURRED_ON_DATE']
     crimedate = datetime.datetime.strptime(occurreddate, '%Y-%m-%d %H:%M:%S')
     entry = bst.get(map, crimedate.date())
+    crimedate_key = crimedate.date()
     if entry is None:
-        # TODO Realizar el caso en el que no se encuentra la fecha
-        pass
+        datentry = {
+            'date': crimedate_key,
+            'crimes': al.new_list()  
+        }
+        bst.insert(map, crimedate_key, datentry)
     else:
         datentry = entry
+    
     add_date_index(datentry, crime)
+    
     return map
 
 
 def add_date_index(datentry, crime):
     """
-    Actualiza un indice de tipo de crimenes.  Este indice tiene una lista
-    de crimenes y una tabla de hash cuya llave es el tipo de crimen y
-    el valor es una lista con los crimenes de dicho tipo en la fecha que
-    se está consultando (dada por el nodo del arbol)
+    Actualiza un índice de tipo de crímenes. Este índice tiene una lista
+    de crímenes y una tabla hash cuya llave es el tipo de crimen y
+    el valor es una lista con los crímenes de dicho tipo en la fecha que
+    se está consultando (dada por el nodo del árbol).
     """
     lst = datentry['lstcrimes']
     al.add_last(lst, crime)
     offenseIndex = datentry['offenseIndex']
-    offentry = lp.get(offenseIndex, crime['OFFENSE_CODE_GROUP'])
-    if (offentry is None):
-        # TODO Realice el caso en el que no se encuentre el tipo de crimen
-        pass
+    offense_type = crime['OFFENSE_CODE_GROUP']
+    offentry = lp.get(offenseIndex, offense_type)
+    
+    if offentry is None:
+        new_offentry = al.new_list()
+        al.add_last(new_offentry, crime)  
+        lp.put(offenseIndex, offense_type, new_offentry)  
     else:
-        # TODO Realice el caso en el que se encuentre el tipo de crimen
-        pass
+        al.add_last(offentry, crime)
+    
     return datentry
+
 
 
 def new_data_entry(crime):
@@ -171,38 +180,57 @@ def index_size(analyzer):
     """
     Numero de elementos en el indice
     """
-    # TODO Completar la función de consulta
-    pass
-
+    tree = analyzer['bst']  
+    return bst.height(tree)
 
 def min_key(analyzer):
     """
-    Llave mas pequena
+    Retorna la llave más pequeña del árbol binario de búsqueda (BST) dentro del analyzer.
     """
-    # TODO Completar la función de consulta
-    pass
+    tree = analyzer['bst']  
+    return bst.min_key(tree)  
+
 
 
 def max_key(analyzer):
     """
     Llave mas grande
     """
-    # TODO Completar la función de consulta
-    pass
-
+    tree = analyzer["bst"]
+    return bst.max_key(tree)
 
 def get_crimes_by_range(analyzer, initialDate, finalDate):
     """
-    Retorna el numero de crimenes en un rago de fechas.
+    Retorna el número de crímenes en un rango de fechas.
     """
-    # TODO Completar la función de consulta
-    pass
+    tree = analyzer['bst']  
+    crimes_in_range = bst.keys(tree, initialDate, finalDate)  
+    total_crimes = 0
+
+    for date in crimes_in_range:
+        entry = bst.get(tree, date)  
+        crimes_list = entry['lstcrimes']  
+        total_crimes += al.size(crimes_list)  
+
+    return total_crimes
+
 
 
 def get_crimes_by_range_code(analyzer, initialDate, offensecode):
     """
-    Para una fecha determinada, retorna el numero de crimenes
-    de un tipo especifico.
+    Para una fecha determinada, retorna el número de crímenes de un tipo específico (offensecode).
     """
-    # TODO Completar la función de consulta
-    pass
+    tree = analyzer['bst']  
+    entry = bst.get(tree, initialDate)  
+
+    if entry is None:
+        return 0  
+    
+    offenseIndex = entry['offenseIndex']
+    crime_list_by_type = lp.get(offenseIndex, offensecode)
+    
+    if crime_list_by_type is None:
+        return 0  
+    
+    return al.size(crime_list_by_type)
+

@@ -54,10 +54,22 @@ def max_key_node (node):
     if node == None:
         return None
     else:
-        if node["rigth"] is None:
+        if node["right"] is None:
             return node["key"] 
         else:
-            return min_key_node(node["rigth"])
+            return min_key_node(node["right"])
+        
+def height(node):
+    """
+    Retorna la altura de un nodo en el árbol binario de búsqueda (BST).
+    """
+    if node is None:
+        return -1  
+    else:
+       
+        left_height = height(node["left"])
+        right_height = height(node["right"])
+        return 1 + max(left_height, right_height)
         
         
             
