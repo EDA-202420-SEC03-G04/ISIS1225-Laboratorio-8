@@ -100,7 +100,7 @@ def update_date_index(map, crime):
             'date': crimedate_key,
             'crimes': al.new_list()  
         }
-        bst.insert(map, crimedate_key, datentry)
+        bst.put(map, crimedate_key, datentry)
     else:
         datentry = entry
     

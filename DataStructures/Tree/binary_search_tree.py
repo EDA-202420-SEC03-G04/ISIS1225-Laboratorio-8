@@ -1,9 +1,12 @@
 from DataStructures.Tree import bst_node as node
 from DataStructures.List import array_list as al
 def new_map():
-     bst = {'root': None,
-           'type': 'BST' }
-     return bst
+    return {
+        'root': None,
+        'type': 'BST'
+    }
+
+my_bst = new_map()
   
 def _conteins(nodo,key,value):
     if nodo==None or value==True:
@@ -61,7 +64,7 @@ def insert_node(root, key, value):
         return root
 
 
-def get(my_bst, key):
+def get(my_bst, key): 
     node = get_node(my_bst["root"], key)
     
     if node is None:
